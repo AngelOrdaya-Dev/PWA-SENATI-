@@ -1,0 +1,155 @@
+<div class="pwa-app-wrapper">
+  <!-- Mobile / Tablet Container Frame -->
+  <main class="app-card">
+    <!-- Header Institucional SENATI -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-senati">
+          <span class="senati-badge">S</span>
+        </div>
+        <div class="header-titles">
+          <h1>SENATI TaskHub PWA</h1>
+          <p class="role-subtitle">
+            {{ rolUsuario }} &bull; {{ online ? 'Modo Online' : 'Modo Fuera de Línea' }}
+          </p>
+        </div>
+      </div>
+      <button class="role-switch-btn" (click)="toggleRol()" title="Cambiar rol">
+        ⇄ {{ rolUsuario === 'Estudiante' ? 'Ver Instructor' : 'Ver Estudiante' }}
+      </button>
+    </header>
+
+    <div class="app-body">
+      <!-- Indicador Dual de Red -->
+      @if (online) {
+        <div class="status-banner online">
+          <span class="status-indicator-dot online-dot"></span>
+          <span><strong>Estado:</strong> 🟢 CONECTADO (Sincronización activa con servidor)</span>
+        </div>
+      } @else {
+        <div class="status-banner offline">
+          <span class="status-indicator-dot offline-dot"></span>
+          <span><strong>Estado:</strong> 🔴 SIN CONEXIÓN - Modo Local Activo</span>
+        </div>
+      }
+
+      <!-- Notificación de Acción -->
+      @if (notificacionMensaje) {
+        <div class="alert-box" [ngClass]="online ? 'alert-online' : 'alert-offline'">
+          <p>{{ notificacionMensaje }}</p>
+        </div>
+      }
+
+      <!-- Sección Tareas Asignadas -->
+      <section class="section-card">
+        <div class="section-header">
+          <h2>{{ rolUsuario === 'Estudiante' ? 'Tareas Asignadas' : 'Mis Cursos y Tareas Asignadas' }}</h2>
+          @if (!online) {
+            <span class="cache-badge">📦 Desde Caché (Service Worker)</span>
+          }
+        </div>
+
+        <ul class="task-list">
+          @for (tarea of listaTareas; track tarea.id) {
+            <li class="task-item" [class.selected]="tarea.id === tareaSeleccionadaId" (click)="tareaSeleccionadaId = tarea.id">
+              <div class="task-info">
+                <span class="task-course">{{ tarea.curso }}</span>
+                <strong class="task-title">{{ tarea.titulo }}</strong>
+                <div class="task-meta">
+                  <span class="task-instructor">👨‍🏫 {{ tarea.instructor }}</span>
+                  <span class="task-date">📅 Entrega: {{ tarea.fechaEntrega }}</span>
+                </div>
+              </div>
+              <div class="task-status-col">
+                <span class="task-badge" [class.completed]="tarea.estado === 'Completado'">
+                  {{ tarea.estado }}
+                </span>
+              </div>
+            </li>
+          }
+          @empty {
+            <li class="empty-state">Cargando catálogo de tareas académicas...</li>
+          }
+        </ul>
+      </section>
+
+      <!-- Sección Registro de Entrega u Observación -->
+      <section class="section-card form-section">
+        <div class="section-header">
+          <h2>{{ rolUsuario === 'Estudiante' ? 'Registrar Entrega / Avance' : 'Registrar Observación / Tarea Local' }}</h2>
+        </div>
+
+        <div class="form-group">
+          <label for="tareaSelect">Seleccione Tarea / Asignatura:</label>
+          <select id="tareaSelect" [(ngModel)]="tareaSeleccionadaId" class="form-control">
+            @for (tarea of listaTareas; track tarea.id) {
+              <option [value]="tarea.id">
+                [{{ tarea.curso }}] - {{ tarea.titulo }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="comentarioInput">
+            {{ rolUsuario === 'Estudiante' ? 'Escriba su avance o enlace del entregable:' : 'Observaciones para el estudiante / taller:' }}
+          </label>
+          <textarea
+            id="comentarioInput"
+            class="form-control"
+            rows="3"
+            [placeholder]="online ? 'Detalle de la entrega para el campus virtual...' : 'Detalle en modo offline (se encolará en IndexedDB)...'"
+            [(ngModel)]="comentarioEntrega"
+          ></textarea>
+        </div>
+
+        <button class="btn-submit" (click)="enviarEntrega()">
+          {{ online ? '🚀 GUARDAR / ENVIAR ENTREGA' : '💾 GUARDAR EN DISPOSITIVO (OFFLINE)' }}
+        </button>
+      </section>
+
+      <!-- Persistencia IndexedDB (senatiTaskDB) -->
+      @if (entregasLocales.length > 0) {
+        <section class="section-card indexed-db-section">
+          <div class="section-header">
+            <h3>🗄️ Persistencia NoSQL: IndexedDB (senatiTaskDB)</h3>
+            <span class="pending-count">{{ entregasLocales.length }} guardado(s)</span>
+          </div>
+          <p class="indexed-db-desc">
+            Almacén: <code>entregas_pendientes</code> (listos para sincronización al recuperar conexión):
+          </p>
+
+          <div class="db-records">
+            @for (reg of entregasLocales; track reg.id) {
+              <div class="db-record-card">
+                <div class="db-record-header">
+                  <strong>ID: #{{ reg.id }}</strong>
+                  <span class="status-pill-offline">{{ reg.estadoSincronizacion }}</span>
+                </div>
+                <p class="db-record-task"><strong>Tarea:</strong> {{ reg.tituloTarea || reg.tareaId }}</p>
+                <p class="db-record-comment"><em>"{{ reg.comentario }}"</em></p>
+                <span class="db-record-time">⏱️ {{ reg.fechaRegistro | date:'medium' }}</span>
+              </div>
+            }
+          </div>
+        </section>
+      }
+    </div>
+
+    <!-- Barra de navegación inferior similar a app nativa PWA -->
+    <footer class="app-footer-nav">
+      <div class="nav-item active">
+        <span>📋</span>
+        <small>Tareas</small>
+      </div>
+      <div class="nav-item">
+        <span>📤</span>
+        <small>Entregas</small>
+      </div>
+      <div class="nav-item">
+        <span>👤</span>
+        <small>Campus</small>
+      </div>
+    </footer>
+  </main>
+</div>
