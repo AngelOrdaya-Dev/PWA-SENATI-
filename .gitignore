@@ -12,6 +12,7 @@ out-tsc/
 
 # IDE / Logs
 .vscode/
-*.log
-.DS_Store
-Thumbs.db
+# Word temporary lockfiles
+~$*
+*.tmp
+
