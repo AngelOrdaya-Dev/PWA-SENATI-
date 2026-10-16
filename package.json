@@ -1,0 +1,13 @@
+{
+  "name": "senati-pwa",
+  "version": "1.0.0",
+  "description": "SENATI PWA - Taller de Aplicaciones Web Progresivas",
+  "scripts": {
+    "start": "npm --prefix senati-taskhub-pwa start",
+    "build": "npm --prefix senati-taskhub-pwa run build",
+    "test": "npm --prefix senati-taskhub-pwa test"
+  },
+  "keywords": ["senati", "pwa", "angular", "indexeddb"],
+  "author": "SENATI",
+  "license": "ISC"
+}

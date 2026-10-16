@@ -1,155 +1,647 @@
-<div class="pwa-app-wrapper">
-  <!-- Mobile / Tablet Container Frame -->
-  <main class="app-card">
-    <!-- Header Institucional SENATI -->
-    <header class="app-header">
-      <div class="brand">
-        <div class="logo-senati">
-          <span class="senati-badge">S</span>
+<div class="app-viewport-wrapper">
+
+  <!-- ================= MARCO DE APLICACIÓN MÓVIL (REAL PWA APP) ================= -->
+  <main class="mobile-phone-device">
+
+    <!-- BARRA DE ESTADO DEL DISPOSITIVO MÓVIL -->
+    <div class="mobile-status-bar">
+      <div class="status-left">
+        <span class="mobile-time">09:41</span>
+      </div>
+      <div class="notch-island"></div>
+      <div class="status-right">
+        <!-- Icono de Red / Wifi SVG -->
+        @if (online) {
+        <svg class="status-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+          <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+          <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+          <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+        } @else {
+        <svg class="status-icon icon-offline-status" viewBox="0 0 24 24" width="14" height="14" fill="none"
+          stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+          <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+          <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+          <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+        }
+        <!-- Batería SVG -->
+        <svg class="status-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="16" height="10" rx="2" ry="2"></rect>
+          <line x1="22" y1="11" x2="22" y2="13"></line>
+        </svg>
+      </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIÓN -->
+    @if (notificacionMensaje) {
+    <div class="mobile-toast" [ngClass]="'toast-' + notificacionTipo">
+      <span class="toast-text">{{ notificacionMensaje }}</span>
+      <button class="toast-btn-close" (click)="notificacionMensaje = ''">&times;</button>
+    </div>
+    }
+
+    <!-- ================= PANTALLA 1: INICIO / LOGIN ================= -->
+    @if (pantallaActual === 'login') {
+    <div class="screen-content screen-login">
+      <div class="login-banner-container">
+        <img src="assets/campus.jpg" alt="Campus Tecnológico SENATI" class="campus-hero-img" />
+        <div class="campus-badge-tag">SEDE CENTRAL &bull; SENATI</div>
+      </div>
+
+      <div class="login-card-body">
+        <div class="brand-shield-circle">
+          <span class="shield-letter">S</span>
         </div>
-        <div class="header-titles">
-          <h1>SENATI TaskHub PWA</h1>
-          <p class="role-subtitle">
-            {{ rolUsuario }} &bull; {{ online ? 'Modo Online' : 'Modo Fuera de Línea' }}
-          </p>
+        <h1 class="brand-app-name">TaskHub</h1>
+        <p class="brand-app-caption">Gestiona tus tareas académicas</p>
+
+        <button class="btn-app-solid" (click)="navegarA('panel')" id="btn-login-action">
+          Iniciar sesión
+        </button>
+
+        <button class="btn-app-text" (click)="navegarA('panel')">
+          ¿No tienes cuenta? Regístrate
+        </button>
+
+        <div class="login-version-footer">
+          <small>SENATI &bull; Escuela de Tecnologías de la Información &bull; PWA</small>
         </div>
       </div>
-      <button class="role-switch-btn" (click)="toggleRol()" title="Cambiar rol">
-        ⇄ {{ rolUsuario === 'Estudiante' ? 'Ver Instructor' : 'Ver Estudiante' }}
-      </button>
-    </header>
+    </div>
+    }
 
-    <div class="app-body">
-      <!-- Indicador Dual de Red -->
-      @if (online) {
-        <div class="status-banner online">
-          <span class="status-indicator-dot online-dot"></span>
-          <span><strong>Estado:</strong> 🟢 CONECTADO (Sincronización activa con servidor)</span>
+    <!-- ================= PANTALLA 2: PANEL DE TAREAS ================= -->
+    @if (pantallaActual === 'panel') {
+    <div class="screen-content screen-panel">
+      <header class="app-top-header">
+        <div class="header-action-left">
+          <button class="btn-header-icon" title="Menú de navegación">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <div class="header-logo-group">
+            <span class="mini-senati-s">S</span>
+            <span class="header-app-title">SENATI TaskHub</span>
+          </div>
         </div>
-      } @else {
-        <div class="status-banner offline">
-          <span class="status-indicator-dot offline-dot"></span>
-          <span><strong>Estado:</strong> 🔴 SIN CONEXIÓN - Modo Local Activo</span>
+        <div class="header-action-right">
+          <button class="btn-header-icon" (click)="navegarA('offline')" title="Bandeja de entregas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"></polyline>
+              <rect x="1" y="3" width="22" height="5"></rect>
+              <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+          </button>
         </div>
-      }
+      </header>
 
-      <!-- Notificación de Acción -->
-      @if (notificacionMensaje) {
-        <div class="alert-box" [ngClass]="online ? 'alert-online' : 'alert-offline'">
-          <p>{{ notificacionMensaje }}</p>
-        </div>
-      }
-
-      <!-- Sección Tareas Asignadas -->
-      <section class="section-card">
-        <div class="section-header">
-          <h2>{{ rolUsuario === 'Estudiante' ? 'Tareas Asignadas' : 'Mis Cursos y Tareas Asignadas' }}</h2>
-          @if (!online) {
-            <span class="cache-badge">📦 Desde Caché (Service Worker)</span>
-          }
+      <div class="panel-scroll-area">
+        <div class="user-greeting-box">
+          <h2>Hola, Angel</h2>
+          <p>Aquí tienes tus tareas pendientes</p>
         </div>
 
-        <ul class="task-list">
-          @for (tarea of listaTareas; track tarea.id) {
-            <li class="task-item" [class.selected]="tarea.id === tareaSeleccionadaId" (click)="tareaSeleccionadaId = tarea.id">
-              <div class="task-info">
-                <span class="task-course">{{ tarea.curso }}</span>
-                <strong class="task-title">{{ tarea.titulo }}</strong>
-                <div class="task-meta">
-                  <span class="task-instructor">👨‍🏫 {{ tarea.instructor }}</span>
-                  <span class="task-date">📅 Entrega: {{ tarea.fechaEntrega }}</span>
+        <!-- 3 TARJETAS KPI DE MÉTRICAS (EXACTAS A LA IMAGEN) -->
+        <div class="kpi-grid">
+          <div class="kpi-box kpi-blue-box" (click)="navegarA('offline')">
+            <span class="kpi-digit">{{ contadorPendientes }}</span>
+            <span class="kpi-name">Pendientes</span>
+          </div>
+          <div class="kpi-box kpi-green-box">
+            <span class="kpi-digit">{{ contadorCompletadas }}</span>
+            <span class="kpi-name">Completadas</span>
+          </div>
+          <div class="kpi-box kpi-purple-box">
+            <span class="kpi-digit">{{ listaTareas.length }}</span>
+            <span class="kpi-name">En curso</span>
+          </div>
+        </div>
+
+        <!-- FILTRO Y BÚSQUEDA (TH-01) -->
+        <div class="search-filter-card">
+          <div class="search-bar-row">
+            <svg class="search-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" class="search-text-input" placeholder="Buscar tarea..." [(ngModel)]="busquedaTitulo"
+              (ngModelChange)="aplicarFiltros()" />
+            @if (busquedaTitulo || cursoFiltro) {
+            <button class="clear-search-btn" (click)="limpiarFiltros()">&times;</button>
+            }
+          </div>
+
+          <div class="filter-row">
+            <select class="course-select-box" [(ngModel)]="cursoFiltro" (ngModelChange)="aplicarFiltros()">
+              <option value="">Todos los cursos</option>
+              @for (c of cursosDisponibles; track c) {
+              <option [value]="c">{{ c }}</option>
+              }
+            </select>
+            <span class="filter-count">{{ tareasFiltradas.length }} tarea(s)</span>
+          </div>
+        </div>
+
+        <!-- LISTA DE TAREAS RECIENTES (PANTALLA 2) -->
+        <div class="recent-tasks-wrapper">
+          <h3 class="recent-tasks-heading">Tareas recientes</h3>
+
+          <div class="tasks-cards-column">
+            @for (tarea of tareasFiltradas; track tarea.id) {
+            <div class="task-item-card" [class.selected-task]="tarea.id === tareaSeleccionadaId"
+              (click)="verDetalleTarea(tarea)" role="button" tabindex="0">
+              <div class="task-dot-indicator" [class.dot-completed]="tarea.estado === 'Completado'"></div>
+              <div class="task-info-content">
+                <strong class="task-heading">{{ tarea.titulo }}</strong>
+                <div class="task-subdata">
+                  <span class="data-date">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ tarea.fechaEntrega }}
+                  </span>
+                  <span class="data-course">{{ tarea.curso }}</span>
                 </div>
               </div>
-              <div class="task-status-col">
-                <span class="task-badge" [class.completed]="tarea.estado === 'Completado'">
+              <div class="task-badge-container">
+                <span class="task-status-chip" [ngClass]="tarea.estado === 'Completado' ? 'chip-green' : 'chip-orange'">
                   {{ tarea.estado }}
                 </span>
               </div>
-            </li>
-          }
-          @empty {
-            <li class="empty-state">Cargando catálogo de tareas académicas...</li>
-          }
-        </ul>
-      </section>
+            </div>
+            }
+            @empty {
+            <div class="tasks-empty-state">
+              <p>No se encontraron tareas coincidentes.</p>
+              <button class="btn-app-text" (click)="limpiarFiltros()">Mostrar todas</button>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    }
 
-      <!-- Sección Registro de Entrega u Observación -->
-      <section class="section-card form-section">
-        <div class="section-header">
-          <h2>{{ rolUsuario === 'Estudiante' ? 'Registrar Entrega / Avance' : 'Registrar Observación / Tarea Local' }}</h2>
+    <!-- ================= PANTALLA 3: DETALLE DE TAREA ================= -->
+    @if (pantallaActual === 'detalle') {
+    <div class="screen-content screen-detail">
+      <header class="app-top-header">
+        <div class="header-action-left">
+          <button class="btn-header-icon" (click)="navegarA('panel')" title="Volver">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <span class="header-app-title">Detalle de tarea</span>
+        </div>
+        <div class="header-action-right">
+          <button class="btn-header-icon" title="Compartir">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="detail-scroll-area" *ngIf="tareaSeleccionada as t">
+        <div class="detail-white-card">
+          <span class="course-pill-tag">{{ t.curso }}</span>
+          <h2 class="detail-title-h2">{{ t.titulo }}</h2>
+
+          <div class="detail-attributes-box">
+            <div class="attr-row">
+              <span class="attr-lbl">Curso:</span>
+              <span class="attr-val">{{ t.curso }}</span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-lbl">Fecha de entrega:</span>
+              <span class="attr-val">{{ t.fechaEntrega }}</span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-lbl">Docente:</span>
+              <span class="attr-val">{{ t.instructor }}</span>
+            </div>
+            <div class="attr-row">
+              <span class="attr-lbl">Estado académico:</span>
+              <span class="task-status-chip chip-orange">{{ t.estado }}</span>
+            </div>
+          </div>
+
+          <div class="detail-section-block">
+            <span class="block-title">Descripción:</span>
+            <p class="block-paragraph">{{ t.descripcion || 'Implementar una PWA con App Manifest, Service Worker e
+              IndexedDB.' }}</p>
+          </div>
+
+          <!-- Archivos adjuntos (Icono SVG real) -->
+          <div class="detail-section-block">
+            <span class="block-title">Archivos adjuntos:</span>
+            <div class="file-attachment-card">
+              <div class="file-pdf-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#dc2626" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+              </div>
+              <div class="file-details-col">
+                <strong class="file-title-txt">{{ t.adjunto || 'Documento.pdf (245 KB)' }}</strong>
+                <span class="file-subtitle-txt">Guía de taller y especificaciones</span>
+              </div>
+              <button class="btn-file-download" title="Descargar archivo">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn-app-solid" (click)="iniciarEntregaDeTarea(t)" id="btn-iniciar-entrega">
+            Entregar tarea
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- ================= PANTALLA 4: FORMULARIO DE ENTREGAS ================= -->
+    @if (pantallaActual === 'entrega') {
+    <div class="screen-content screen-entrega">
+      <header class="app-top-header">
+        <div class="header-action-left">
+          <button class="btn-header-icon" (click)="navegarA('panel')" title="Volver">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <span class="header-app-title">Entregar tarea</span>
+        </div>
+      </header>
+
+      <div class="entrega-scroll-area">
+        <div class="task-context-banner" *ngIf="tareaSeleccionada as sel">
+          <h3 class="context-task-title">{{ sel.titulo }}</h3>
+          <span class="context-caption">Adjunta tu trabajo</span>
         </div>
 
-        <div class="form-group">
-          <label for="tareaSelect">Seleccione Tarea / Asignatura:</label>
-          <select id="tareaSelect" [(ngModel)]="tareaSeleccionadaId" class="form-control">
+        <!-- Selector de Tarea -->
+        <div class="app-input-group" [class.has-validation-error]="erroresValidacion.tarea">
+          <label for="select-tarea-receptora">Tarea Receptora: <span class="asterisk">*</span></label>
+          <select id="select-tarea-receptora" class="app-select" [(ngModel)]="tareaSeleccionadaId"
+            (ngModelChange)="erroresValidacion.tarea = undefined">
             @for (tarea of listaTareas; track tarea.id) {
-              <option [value]="tarea.id">
-                [{{ tarea.curso }}] - {{ tarea.titulo }}
-              </option>
+            <option [value]="tarea.id">
+              [{{ tarea.curso }}] - {{ tarea.titulo }}
+            </option>
             }
           </select>
+          @if (erroresValidacion.tarea) {
+          <span class="validation-message">{{ erroresValidacion.tarea }}</span>
+          }
         </div>
 
-        <div class="form-group">
-          <label for="comentarioInput">
-            {{ rolUsuario === 'Estudiante' ? 'Escriba su avance o enlace del entregable:' : 'Observaciones para el estudiante / taller:' }}
-          </label>
-          <textarea
-            id="comentarioInput"
-            class="form-control"
-            rows="3"
-            [placeholder]="online ? 'Detalle de la entrega para el campus virtual...' : 'Detalle en modo offline (se encolará en IndexedDB)...'"
-            [(ngModel)]="comentarioEntrega"
-          ></textarea>
-        </div>
-
-        <button class="btn-submit" (click)="enviarEntrega()">
-          {{ online ? '🚀 GUARDAR / ENVIAR ENTREGA' : '💾 GUARDAR EN DISPOSITIVO (OFFLINE)' }}
-        </button>
-      </section>
-
-      <!-- Persistencia IndexedDB (senatiTaskDB) -->
-      @if (entregasLocales.length > 0) {
-        <section class="section-card indexed-db-section">
-          <div class="section-header">
-            <h3>🗄️ Persistencia NoSQL: IndexedDB (senatiTaskDB)</h3>
-            <span class="pending-count">{{ entregasLocales.length }} guardado(s)</span>
-          </div>
-          <p class="indexed-db-desc">
-            Almacén: <code>entregas_pendientes</code> (listos para sincronización al recuperar conexión):
-          </p>
-
-          <div class="db-records">
-            @for (reg of entregasLocales; track reg.id) {
-              <div class="db-record-card">
-                <div class="db-record-header">
-                  <strong>ID: #{{ reg.id }}</strong>
-                  <span class="status-pill-offline">{{ reg.estadoSincronizacion }}</span>
-                </div>
-                <p class="db-record-task"><strong>Tarea:</strong> {{ reg.tituloTarea || reg.tareaId }}</p>
-                <p class="db-record-comment"><em>"{{ reg.comentario }}"</em></p>
-                <span class="db-record-time">⏱️ {{ reg.fechaRegistro | date:'medium' }}</span>
-              </div>
+        <!-- ZONA DE CARGA DROPZONE (Icono SVG Nube) -->
+        <div class="cloud-dropzone-container">
+          <input type="file" class="hidden-file-element" id="app-file-picker" (change)="onFileSelected($event)" />
+          <label for="app-file-picker" class="dropzone-interactive-label">
+            <div class="cloud-icon-circle-svg">
+              <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#0033a0" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 16l-4-4-4 4"></path>
+                <path d="M12 12v9"></path>
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+              </svg>
+            </div>
+            <strong class="dropzone-callout">Arrastra tus archivos aquí</strong>
+            <span class="dropzone-help-text">o selecciona desde tu dispositivo</span>
+            @if (archivoSeleccionadoNombre) {
+            <div class="selected-file-badge">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48">
+                </path>
+              </svg>
+              <span>{{ archivoSeleccionadoNombre }}</span>
+            </div>
             }
+          </label>
+        </div>
+
+        <!-- Comentarios de entrega (TH-02) -->
+        <div class="app-input-group" [class.has-validation-error]="erroresValidacion.comentario">
+          <label for="app-comment-textarea">Comentarios: <span class="asterisk">*</span></label>
+          <textarea id="app-comment-textarea" class="app-textarea" rows="3" placeholder="Agrega un comentario..."
+            [(ngModel)]="comentarioEntrega" (ngModelChange)="erroresValidacion.comentario = undefined"></textarea>
+          @if (erroresValidacion.comentario) {
+          <span class="validation-message" id="val-comentario-err">{{ erroresValidacion.comentario }}</span>
+          }
+        </div>
+
+        <button class="btn-app-solid" (click)="enviarEntrega()" id="btn-guardar-entrega">
+          Enviar entrega
+        </button>
+      </div>
+    </div>
+    }
+
+    <!-- ================= PANTALLA 5: MODO OFFLINE (ENTREGAS GUARDADAS) ================= -->
+    @if (pantallaActual === 'offline') {
+    <div class="screen-content screen-offline">
+      <header class="app-top-header">
+        <div class="header-action-left">
+          <button class="btn-header-icon" (click)="navegarA('panel')" title="Volver al panel">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+          </button>
+          <span class="header-app-title">Entregas guardadas</span>
+        </div>
+        <div class="header-action-right">
+          <span class="tray-counter-pill">{{ entregasLocales.length }}</span>
+        </div>
+      </header>
+
+      <div class="offline-scroll-area">
+        <!-- Banner de Conectividad con Icono SVG -->
+        @if (!online) {
+        <div class="connectivity-notice notice-offline">
+          <div class="notice-svg-col">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ef4444" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+              <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+              <line x1="12" y1="20" x2="12.01" y2="20"></line>
+            </svg>
           </div>
-        </section>
-      }
+          <div class="notice-txt-col">
+            <strong>Sin conexión</strong>
+            <p>Tu trabajo se guardará localmente y se enviará cuando recuperes la conexión.</p>
+          </div>
+        </div>
+        } @else {
+        <div class="connectivity-notice notice-online">
+          <div class="notice-svg-col">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#16a34a" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+              <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+              <line x1="12" y1="20" x2="12.01" y2="20"></line>
+            </svg>
+          </div>
+          <div class="notice-txt-col">
+            <strong>Con conexión activa</strong>
+            <p>Listo para intentar sincronizar. Sin API remota disponible, el estado se mantiene PENDIENTE.</p>
+          </div>
+        </div>
+        }
+
+        <div class="tray-title-bar">
+          <h3>Entregas guardadas</h3>
+          <button class="btn-sync-action" [disabled]="!online || sincronizando || contadorPendientes === 0"
+            (click)="reintentarSincronizacion()" id="btn-sync-pendientes">
+            <svg class="sync-spin-icon" [class.is-spinning]="sincronizando" viewBox="0 0 24 24" width="13" height="13"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>{{ sincronizando ? 'Sincronizando...' : 'Reintentar' }}</span>
+          </button>
+        </div>
+
+        <!-- LISTA DE ENTREGAS EN INDEXEDDB (PANTALLA 5) -->
+        <div class="saved-items-column">
+          @for (entrega of entregasLocales; track entrega.id) {
+          <div class="saved-delivery-row">
+            <div class="doc-icon-box">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0033a0" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <div class="delivery-center-info">
+              <strong class="item-task-name">{{ entrega.tituloTarea }}</strong>
+              <span class="item-course-name">{{ entrega.curso }}</span>
+              <p class="item-comment-preview">“{{ entrega.comentario }}”</p>
+              <small class="item-timestamp">{{ entrega.fechaRegistro | date:'medium' }}</small>
+            </div>
+            <div class="delivery-right-actions">
+              <span class="chip-status-offline">{{ entrega.estadoSincronizacion }}</span>
+              <div class="action-buttons-pair">
+                <button class="btn-micro-action" (click)="abrirDetalle(entrega.id)" title="Ver detalle">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button class="btn-micro-action btn-micro-delete" (click)="solicitarEliminar(entrega, $event)"
+                  title="Eliminar entrega">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          }
+          @empty {
+          <div class="empty-deliveries-state">
+            <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#94a3b8" stroke-width="1.8"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"></polyline>
+              <rect x="1" y="3" width="22" height="5"></rect>
+              <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+            <h4>No hay entregas registradas en IndexedDB</h4>
+            <p>Las entregas que registres se conservarán aquí incluso después de recargar la página o perder la
+              conexión.</p>
+            <button class="btn-app-solid" (click)="navegarA('entrega')">
+              Crear una entrega
+            </button>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- ================= BARRA DE NAVEGACIÓN INFERIOR (ICONOS SVG NATIVOS) ================= -->
+    <nav class="app-bottom-tabbar" aria-label="Navegación de la aplicación">
+      <button class="tabbar-link" [class.is-active]="pantallaActual === 'login'" (click)="navegarA('login')"
+        title="Inicio">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span class="tabbar-label">Inicio</span>
+      </button>
+
+      <button class="tabbar-link" [class.is-active]="pantallaActual === 'panel'" (click)="navegarA('panel')"
+        title="Tareas">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span class="tabbar-label">Tareas</span>
+      </button>
+
+      <button class="tabbar-link" [class.is-active]="pantallaActual === 'detalle'" (click)="navegarA('detalle')"
+        title="Detalle">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span class="tabbar-label">Detalle</span>
+      </button>
+
+      <button class="tabbar-link" [class.is-active]="pantallaActual === 'entrega'" (click)="navegarA('entrega')"
+        title="Entregar">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span class="tabbar-label">Entregar</span>
+      </button>
+
+      <button class="tabbar-link" [class.is-active]="pantallaActual === 'offline'" (click)="navegarA('offline')"
+        title="Guardadas">
+        <div class="icon-relative">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
+          </svg>
+          @if (contadorPendientes > 0) {
+          <span class="tabbar-badge">{{ contadorPendientes }}</span>
+          }
+        </div>
+        <span class="tabbar-label">Guardadas</span>
+      </button>
+    </nav>
+
+    <!-- BARRA INFERIOR DEL SISTEMA (HOME INDICATOR) -->
+    <div class="mobile-home-bar">
+      <div class="home-indicator"></div>
     </div>
 
-    <!-- Barra de navegación inferior similar a app nativa PWA -->
-    <footer class="app-footer-nav">
-      <div class="nav-item active">
-        <span>📋</span>
-        <small>Tareas</small>
-      </div>
-      <div class="nav-item">
-        <span>📤</span>
-        <small>Entregas</small>
-      </div>
-      <div class="nav-item">
-        <span>👤</span>
-        <small>Campus</small>
-      </div>
-    </footer>
   </main>
+
 </div>
+
+<!-- ================= MODAL: CONFIRMACIÓN DE ELIMINACIÓN (TH-07) ================= -->
+@if (entregaParaEliminar) {
+<div class="app-modal-overlay" (click)="cancelarEliminacion()">
+  <div class="app-modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="modal-alert-header">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#b91c1c" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      <h3>Confirmar Eliminación</h3>
+    </div>
+    <div class="modal-alert-body">
+      <p>¿Deseas eliminar definitivamente el registro de la entrega?</p>
+      <div class="modal-target-box">
+        <strong>#{{ entregaParaEliminar.id }}: {{ entregaParaEliminar.tituloTarea }}</strong>
+        <p>“{{ entregaParaEliminar.comentario }}”</p>
+      </div>
+      <small class="modal-danger-hint">Esta acción removerá el registro de IndexedDB y no se puede deshacer.</small>
+    </div>
+    <div class="modal-buttons-row">
+      <button class="btn-modal-back" (click)="cancelarEliminacion()">Cancelar</button>
+      <button class="btn-modal-danger" (click)="confirmarEliminacion()">Eliminar</button>
+    </div>
+  </div>
+</div>
+}
+
+<!-- ================= MODAL: DETALLE COMPLETO ================= -->
+@if (entregaSeleccionadaDetalle) {
+<div class="app-modal-overlay" (click)="cerrarDetalle()">
+  <div class="app-modal-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="modal-info-header">
+      <h3>Detalle de Entrega #{{ entregaSeleccionadaDetalle.id }}</h3>
+      <button class="modal-x-btn" (click)="cerrarDetalle()">&times;</button>
+    </div>
+    <div class="modal-alert-body">
+      <div class="det-item-row">
+        <span class="det-key">Tarea:</span>
+        <strong>{{ entregaSeleccionadaDetalle.tituloTarea }}</strong>
+      </div>
+      <div class="det-item-row">
+        <span class="det-key">Curso:</span>
+        <span>{{ entregaSeleccionadaDetalle.curso }}</span>
+      </div>
+      <div class="det-item-row">
+        <span class="det-key">Fecha:</span>
+        <span>{{ entregaSeleccionadaDetalle.fechaRegistro | date:'medium' }}</span>
+      </div>
+      <div class="det-item-row">
+        <span class="det-key">Estado:</span>
+        <span class="chip-status-offline">{{ entregaSeleccionadaDetalle.estadoSincronizacion }}</span>
+      </div>
+      <div class="det-item-row">
+        <span class="det-key">Intentos sync:</span>
+        <span>{{ entregaSeleccionadaDetalle.intentosSincronizacion }}</span>
+      </div>
+      <div class="det-comment-container">
+        <span class="det-key">Comentario:</span>
+        <div class="comment-text-panel">{{ entregaSeleccionadaDetalle.comentario }}</div>
+      </div>
+    </div>
+    <div class="modal-buttons-row">
+      <button class="btn-app-solid" (click)="cerrarDetalle()">Cerrar</button>
+    </div>
+  </div>
+</div>
+}

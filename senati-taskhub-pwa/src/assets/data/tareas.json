@@ -1,26 +1,42 @@
 [
   {
-    "id": 101,
-    "curso": "Desarrollo de Software PWA",
-    "titulo": "Entregable 01: Configuración de Service Worker",
+    "id": 1,
+    "curso": "Desarrollo Web",
+    "titulo": "Desarrollo Web - Módulo 3",
     "instructor": "Ing. Jorge Luque",
-    "fechaEntrega": "2026-10-15",
-    "estado": "Pendiente"
+    "fechaEntrega": "15/04/2026",
+    "estado": "Pendiente",
+    "descripcion": "Implementar una PWA con App Manifest, Service Worker e IndexedDB.",
+    "adjunto": "Documento.pdf (245 KB)"
   },
   {
-    "id": 102,
-    "curso": "Base de Datos Avanzada",
-    "titulo": "Laboratorio 03: Script DDL PostgreSQL",
+    "id": 2,
+    "curso": "Redes y Comunicaciones",
+    "titulo": "Redes - Práctica 2",
     "instructor": "Ing. Carlos Mendoza",
-    "fechaEntrega": "2026-10-18",
-    "estado": "Completado"
+    "fechaEntrega": "18/04/2026",
+    "estado": "Pendiente",
+    "descripcion": "Configuración de enrutamiento dinámico y topologías seguras en Packet Tracer.",
+    "adjunto": "Guia_Laboratorio_Redes.pdf (180 KB)"
   },
   {
-    "id": 103,
-    "curso": "Inteligencia Artificial Aplicada",
-    "titulo": "Proyecto 02: Clasificación de Modelos con Python",
-    "instructor": "Ing. Luque Chambi Jorge",
-    "fechaEntrega": "2026-10-22",
-    "estado": "Pendiente"
+    "id": 3,
+    "curso": "Base de Datos",
+    "titulo": "Base de Datos - Lab 4",
+    "instructor": "Mg. Walter Alarcón",
+    "fechaEntrega": "20/04/2026",
+    "estado": "Completado",
+    "descripcion": "Modelado relacional y scripts DDL con PostgreSQL y normalización.",
+    "adjunto": "Script_PostgreSQL.sql (95 KB)"
+  },
+  {
+    "id": 4,
+    "curso": "Inteligencia Artificial",
+    "titulo": "IA Aplicada - Proyecto 02",
+    "instructor": "Ing. Jorge Luque",
+    "fechaEntrega": "22/04/2026",
+    "estado": "Pendiente",
+    "descripcion": "Clasificación multiclase con Scikit-Learn y métricas de evaluación.",
+    "adjunto": "Dataset_Modelos.csv (512 KB)"
   }
 ]
